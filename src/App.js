@@ -79,6 +79,7 @@ function App() {
     }
   return (
 <div>
+    {/* al finalizar el juego lo mando al componente Felicidades */}
       {gameComplete ? (
         <Felicidades attempts={attempts} onRestart={handleRestartGame} />
       ) : (

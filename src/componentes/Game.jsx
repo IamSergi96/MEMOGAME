@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 import './Game.css';
 
+//creo Game (tablero) que tendra dos propiedades: cartas y cuando se complete
 const Game = ({ cartas, onGameComplete }) => {
+  //almaceno los estados de las cartas (seleccionadas y deshabilitadas cuando se seleccionen), el marcador de intentos y aciertos que seran useState porque variaran
   const [selectedItems, setSelectedItems] = useState([]);
   const [attempts, setAttempts] = useState(0);
   const [matches, setMatches] = useState(0);
   const [disabledCards, setDisabledCards] = useState(Array(cartas.length).fill(false));
 
   const initializeGame = useCallback(() => {
+    //inicializo el Game con useCallback, restableciendo los estqados y barajando las cartas (shuffle) cuando la propiedad cartas cambie
     const shuffledCartas = shuffle(cartas);
     console.log("Shuffled Cartas:", shuffledCartas);
     setSelectedItems([]);
@@ -16,20 +19,23 @@ const Game = ({ cartas, onGameComplete }) => {
     setDisabledCards(Array(shuffledCartas.length).fill(false));
   }, [cartas]);
 
+  //use useEffect para iniciar el juego cuando se monta el componente y cada vez qeu cambian las cartas
   useEffect(() => {
     initializeGame();
   }, [initializeGame]);
-
+//vuelvo a usar useEffect para verificar el fin del juego (puntuacion maxima de 6 (12/2))
   useEffect(() => {
     if (matches === cartas.length / 2) {
       onGameComplete(attempts);
+      //verifico y llamo a la funcion para cuando se completa el juego onGameComplete
     }
   }, [matches, cartas.length, attempts, onGameComplete]);
 
+  //funciones shuffle para barajar, handleCardClick para manejar los clics en carta y actualizar e checkMatch, checkMatch para ver si coinciden y hacen match
   const shuffle = (array) => {
     let currentIndex = array.length;
     let temporaryValue, randomIndex;
-
+//he encontrado esta logica porque no me salia de otra forma, he usado while
     while (currentIndex !== 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
@@ -69,12 +75,12 @@ const Game = ({ cartas, onGameComplete }) => {
       });
     }
 
-    // Voltea las cartas de nuevo después de un breve intervalo
+    // Voltea las cartas de nuevo después de 500ms
     setTimeout(() => {
       setSelectedItems([]);
     }, 500);
   };
-
+//renderizar las cartas y mostrar intentos y aciertos
   return (
     <div className="gallery">
       <div className="div1">
